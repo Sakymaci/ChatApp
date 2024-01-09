@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat Application</title>
+  <!-- Include the Socket.IO library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+</head>
+<body>
+  <div id="root">
+    <div id="chat">
+      <h1>Chat Application</h1>
+      <div id="messages"></div>
+      <input type="text" id="messageInput" placeholder="Type a message..." />
+      <button id="sendButton">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Connect to the Socket.IO server
+    const socket = io();
+
+    // Function to add a message to the chat
+    function addMessage(message) {
+      const messagesDiv = document.getElementById("messages");
+      const messageElement = document.createElement("div");
+      messageElement.textContent = message;
+      messagesDiv.appendChild(messageElement);
+    }
+
+    // Event handler for sending messages
+    document.getElementById("sendButton").addEventListener("click", () => {
+      const messageInput = document.getElementById("messageInput");
+      const message = messageInput.value;
+      if (message.trim() !== "") {
+        // Send the message to the server
+        socket.emit("chatMessage", message);
+        messageInput.value = "";
+      }
+    });
+
+    // Event listener for receiving messages from the server
+    socket.on("chatMessage", (message) => {
+      addMessage(message);
+    });
+  </script>
+</body>
+</html>
